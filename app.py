@@ -1,4 +1,3 @@
-#!E:/GitHub/ccs-log/env/Scripts/python
 import sqlite3 ,os
 from flask import Flask, flash, redirect, render_template, request, session, abort , g , url_for , jsonify
 from passlib.hash import sha256_crypt as sha
@@ -28,6 +27,11 @@ if app.config["DEBUG"]:
         response.headers["Expires"] = 0
         response.headers["Pragma"] = "no-cache"
         return response
+    
+import pygeoip
+from weather import Weather, Unit
+
+gi = pygeoip.GeoIP('GeoIPCity.dat', pygeoip.MEMORY_CACHE)
 
 def login_required(f):
     @wraps(f)
@@ -129,7 +133,22 @@ def signup():
 @app.route('/members')
 @login_required
 def profile():
-    return render_template('home.html', un=session["username"])     
+    location = request.remote_addr
+
+    location = gi.record_by_addr(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
+    #city = location['city']
+    city = 'Patiala'
+    location = jsonify(location)
+
+    weather = Weather(unit=Unit.CELSIUS)
+    location1 = weather.lookup_by_location(str(city))
+    condition = location1.condition
+    weather = str(condition.text)
+
+
+
+    return render_template('home.html',location = city, weather = weather, un=session["username"])
+    
 
 @app.route("/logout")
 def logout():
@@ -141,4 +160,4 @@ def logout():
 
 if __name__ == "__main__":
     
-    app.run(host = "0.0.0.0",debug=True, port=8080)
+    app.run(debug = True)
