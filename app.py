@@ -8,12 +8,9 @@ from flask import send_from_directory
 from flask_mail import Mail , Message
 import uuid
 import pygeoip
-<<<<<<< HEAD
 from weather import Weather, Unit
 
-=======
-from weather import Weather ,Unit 
->>>>>>> d6ea375c5000f2e104e5e1ca936600d91fb338a8
+
 app = Flask(__name__, static_url_path="", static_folder="static")
 mail=Mail(app)
 
