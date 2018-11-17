@@ -1,11 +1,36 @@
 {% extends 'index.html' %}
 
-
-
 {% block content %}
 	
 	<h3> {{ location }} </h3>
 	 <h3> {{ weather }} </h3>
 
+
+{% block username %}
+	{{ un }}
 {% endblock %}
 
+{% block cards %}
+ <div class="row">
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Weather Conditions</h4>
+            <p class="category">Today</p>
+        </div>
+        <div class="content">
+            {{ weather }}
+            {{ location }}
+            <div class="footer">
+              
+                <hr>
+                <div class="stats">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

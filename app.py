@@ -1,165 +1,210 @@
-import sqlite3 ,os
-from flask import Flask, flash, redirect, render_template, request, session, abort , g , url_for , jsonify
-from passlib.hash import sha256_crypt as sha
-from hashlib import md5
-from functools import wraps
-from datetime import datetime
-from flask import send_from_directory
-from flask_mail import Mail , Message
-import uuid
-import pygeoip
-from weather import Weather, Unit
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-app = Flask(__name__, static_url_path="", static_folder="static")
-mail=Mail(app)
+    <title>Dashboard - {{ session["username"] }}</title>
 
-UPLOADS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/uploads')
-app.config['UPLOAD_FOLDER'] = UPLOADS_PATH
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #Limits filesize to 16MB
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
 
 
-app.secret_key = os.urandom(12)
+    <!-- Bootstrap core CSS     -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
 
-Database = 'agro.db'
+    <!-- Animation library for notifications   -->
+    <link href="/css/animate.min.css" rel="stylesheet"/>
 
-if app.config["DEBUG"]:
-    @app.after_request
-    def after_request(response):
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response.headers["Expires"] = 0
-        response.headers["Pragma"] = "no-cache"
-        return response
-    
-import pygeoip
-from weather import Weather, Unit
-
-gi = pygeoip.GeoIP('GeoIPCity.dat', pygeoip.MEMORY_CACHE)
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("username") is None:
-            return redirect(url_for("login", next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(Database)
-    return db
-
-def query_db(query, args=(), one=False): #used to retrive values from the table
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-def execute_db(query , args=()): #executes a sql command like alter table and insert
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute(query , args)
-    conn.commit()
-    cur.close()
-
-
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
-
-@app.route('/')
-@login_required
-def home():
-    redirect(url_for("home",username=session['username']))
-
-
-@app.route('/login',methods=['POST','GET'])
-def login():
-    if request.method == "GET":
-        return render_template("login.html")
-    else:
-        error = None
-        username=request.form["username"]
-        password=request.form["password"]
-        phash = query_db("select password from users where username = ?", (username, ))
-        if phash==[]:
-            flash("User does not exist","danger")
-            return render_template("login.html")
-
-        if sha.verify(password, phash[0][0]):
-            session["username"] = username
-            return redirect(url_for('profile'))
-        else:
-            flash("Incorrect Password","danger")
-            return render_template("login.html")
-
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == "GET":
-        return render_template("signup.html")
-    else:
-        submission = {}
-        submission["username"] = request.form["username"]
-        submission["name"] = request.form["name"]
-        submission["email"] = request.form["email"]
-        submission["phone"] = request.form["ph"]
-        submission["pass"] = request.form["password"]
-        submission["conf_pass"] = request.form["conf_pass"]
-        digest = md5(submission['username'].encode('utf-8')).hexdigest()
-        submission["image"] = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 256) #here 256 is size in sq pixels
-
-
-        if submission["pass"]!=submission["conf_pass"]:
-            flash("Passwords don't match","danger")
-            return render_template("signup.html")
-
-        if query_db("select username from users where username = ?", (submission["username"],))!=[]:
-            flash("User already taken","danger")
-            return render_template("signup.html")
-
-        password = sha.encrypt(submission["pass"])
-        execute_db("insert into users values(?,?,?,?,?,0,?)", (
-            submission["username"],
-            submission["name"],
-            submission["email"],
-            password,
-            submission["phone"],
-            submission["image"],
-        ))
-        flash("User Created","success")
-        return redirect(url_for("login"))
-
-@app.route('/members')
-@login_required
-def profile():
-    location = request.remote_addr
-
-    location = gi.record_by_addr(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
-    #city = location['city']
-    city = 'Patiala'
-    location = jsonify(location)
-
-    weather = Weather(unit=Unit.CELSIUS)
-    location1 = weather.lookup_by_location(str(city))
-    condition = location1.condition
-    weather = str(condition.text)
+    <!--  Paper Dashboard core CSS    -->
+    <link href="/css/paper-dashboard.css" rel="stylesheet"/>
 
 
 
-    return render_template('home.html',location = city, weather = weather, un=session["username"])
-    
+    <!--  Fonts and icons     -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="/css/themify-icons.css" rel="stylesheet">
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    flash("Logout success","success")
-    return redirect(url_for("login"))
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="sidebar" data-background-color="white" data-active-color="danger">
+
+    <!--
+        Tip 1: you can change the color of the sidebar's background using: data-background-color="white | black"
+        Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+    -->
+
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                    <a class="simple-text">
+                       Agro
+                    </a>
+            </div>
+
+                <ul class="nav">
+                <li {% if request.path == url_for('profile') %}class="active"{% endif %}>
+                    <a href="{{ url_for('profile') }}">
+                        <i class="ti-user"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
+            <center><div id="google_translate_element"></div><script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'bn,gu,hi,kn,mr,ne,pa,sd,ta,te,ur'}, 'google_translate_element');
+}
+</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                                        </center>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar bar1"></span>
+                        <span class="icon-bar bar2"></span>
+                        <span class="icon-bar bar3"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">
+                                            {% if request.path == url_for('profile') %}
+                                                Home
+                                            <!-- {% elif request.path == url_for('buy_sell') %}
+                                                Buyers/Sellers
+                                                {% elif request.path == url_for('QA') %}
+                                                    Q and A
+                                                {% else %}
+                                                    Dashboard -->
+                                            {% endif %}
+                                        </a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="ti-settings"></i>
+                                <p>Settings</p>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="">Profile</a></li>
+                                <li><a href="{{ url_for('logout')}}">Sign Out</a></li>
+                              </ul>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
 
 
 
-if __name__ == "__main__":
-    
-    app.run(debug = True)
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      var messages = {{ messages | safe }}; 
+      for (var i=0; i<messages.length; i++) {
+        alert(messages[i]);
+      }
+    </script>
+  {% endif %}
+{% endwith %}
+
+
+
+<!--  {% with messages = get_flashed_messages(with_categories=true) %}
+   
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %} -->
+
+        <!-- <footer class="footer">
+            <div class="container-fluid">
+                <nav class="pull-left">
+                    <ul>
+
+                        <li>
+                            <a href="http://www.creative-tim.com">
+                                Creative Tim
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://blog.creative-tim.com">
+                               Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.creative-tim.com/license">
+                                Licenses
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="copyright pull-right">
+                    &copy; <script>document.write(new Date().getFullYear())</script>, made with <i class="fa fa-heart heart"></i> by <a href="http://www.creative-tim.com">Creative Tim</a>
+                </div>
+            </div>
+        </footer> -->
+
+    </div>
+</div>
+
+
+
+
+    <!--   Core JS Files   -->
+    <!-- <script src="/js/jquery-1.10.2.js" type="text/javascript"></script> -->
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/js/picker.js" type="text/javascript"></script>
+    <script src="/js/picker.date.js" type="text/javascript"></script>
+    <script src="/js/picker.time.js" type="text/javascript"></script>
+    <link href="/css/default.css" rel="stylesheet">
+    <link href="/css/default.date.css" rel="stylesheet">
+    <link href="/css/default.time.css" rel="stylesheet">
+
+    <!--  Checkbox, Radio & Switch Plugins -->
+    <script src="/js/bootstrap-checkbox-radio.js"></script>
+
+    <!--  Charts Plugin -->
+    <script src="/js/chartist.min.js"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="/js/bootstrap-notify.js"></script>
+
+    <!--  Google Maps Plugin    -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+
+    <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
+    <script src="/js/paper-dashboard.js"></script>
+
+    <!-- Paper Dashboard DEMO methods, don't include it in your project! -->
+    <script src="/js/demo.js"></script>
+
+
+
+<div class="content">
+            <div class="container-fluid">
+                {% block content %}
+                
+                {% endblock %}
+            </div>
+        </div>
+
+
+</body>
+</html>
