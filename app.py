@@ -7,7 +7,8 @@ from datetime import datetime
 from flask import send_from_directory
 from flask_mail import Mail , Message
 import uuid
-
+import pygeoip
+from weather import Weather ,Unit 
 app = Flask(__name__, static_url_path="", static_folder="static")
 mail=Mail(app)
 
