@@ -51,21 +51,21 @@
                     <a href="{{ url_for('profile') }}">
                         <i class="ti-user"></i>
                         <p>Home</p>
-                    </a>
-                     <a href="https://maps.google.com/?q={{location}}+,+pesticides+store+near+me" target=_blank;>
-                        <i class="ti-user"></i>
+                    </a></li>
+                     <li><a href="https://maps.google.com/?q={{location}}+,+pesticides+store" target=_blank;>
+                        <i class="ti-map-alt"></i>
                         <p>Pesticide</p >
-                    </a>
-                     <a href="https://maps.google.com/?q=agricultural+centers+near+me" target=_blank;>
-                        <i class="ti-user"></i>
+                    </a></li>
+                     <li><a href="https://maps.google.com/?q={{location}}+,+agricultural+centers" target=_blank;>
+                        <i class="ti-map-alt"></i>
                         <p>Agricultural Centers </p >
-                    </a>
-                    <a href="{{ url_for('sell') }}">
-                        <i class="ti-user"></i>
+                    </a></li>
+                    <li {% if request.path == url_for('sell') %}class="active"{% endif %}><a href="{{ url_for('sell') }}">
+                        <i class="ti-money"></i>
                         <p>Sellers</p>
-                    </a>
-                      <a href="{{ url_for('buy') }}">
-                        <i class="ti-user"></i>
+                    </a></li>
+                     <li {% if request.path == url_for('buy') %}class="active"{% endif %}> <a href="{{ url_for('buy') }}">
+                        <i class="ti-money"></i>
                         <p>Buyers</p>
                     </a>
 
