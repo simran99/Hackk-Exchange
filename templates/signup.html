@@ -2,7 +2,9 @@
 <head>
 <title>AgroWeb</title>
 <link rel="stylesheet" type="text/css" href="/css/login.css">
-
+  <link rel="stylesheet" type="text/css" href="/css/animate.css">
+  <link rel="stylesheet" type="text/css" href="/css/util.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
 <body><div class="container">
@@ -23,21 +25,33 @@
           <div class="wrap-input100 validate-input" >
             <input class="input100" type="text" name="name" placeholder="Name">
             <span class="focus-input100"></span>
+            <span class="symbol-input100">
+              <i class="fa fa-user-o" aria-hidden="true"></i>
+            </span>
           </div>
 
           <div class="wrap-input100 validate-input" >
             <input class="input100" type="text" name="email" placeholder="Email Id">
             <span class="focus-input100"></span>
+            <span class="symbol-input100">
+              <i class="fa fa-inbox" aria-hidden="true"></i>
+            </span>
           </div>
 
           <div class="wrap-input100 validate-input" >
             <input class="input100" type="text" name="ph" placeholder="Phone Number">
             <span class="focus-input100"></span>
+            <span class="symbol-input100">
+              <i class="fa fa-mobile-phone" aria-hidden="true"></i>
+            </span>
           </div>
 
           <div class="wrap-input100 validate-input" >
             <input class="input100" type="text" name="username" placeholder="Username" data-validate="Username is required">
             <span class="focus-input100"></span>
+            <span class="symbol-input100">
+              <i class="fa fa-user" aria-hidden="true"></i>
+            </span>
           </div>
 
           <div class="wrap-input100 validate-input" data-validate = "Password is required">
@@ -66,5 +80,11 @@
       <div class="singup">
         I already have a account!  <a class="txt2" onclick="window.location.href='/login'">Login</a>
       </div>
+      <center><div id="google_translate_element"></div><script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'bn,gu,hi,kn,mr,ne,pa,sd,ta,te,ur'}, 'google_translate_element');
+}
+</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                                        </center>
   </div>
 </div>
