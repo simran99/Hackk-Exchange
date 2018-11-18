@@ -22,6 +22,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #Limits filesize to 16MB
 app.secret_key = os.urandom(12)
 
 Database = 'agro.db'
+id = 0
 
 if app.config["DEBUG"]:
     @app.after_request
@@ -167,47 +168,83 @@ def buy():
     return render_template('buy.html', un=session["username"], buy=buy)
 
  
-#  @app.route('/addsell', methods=['GET', 'POST'])
-# @login_required
-# def addsell():
-#     sell=query_db('select * from buy_sell')
-#     if request.method == "GET":
-#         return render_template("sell.html",un=session["username"],sell=sell)
-#     else:
-#         submission = {}
-#         submission["item"] = request.form["item"]
-#         submission["quantity"] = request.form["quantity"]
-#         submission["price"] = request.form["price"]
-#         submission["name"] = request.form["name"]
-#         submission["contact"] = request.form["contact"]
-#         p = request.form["type"]
-#         if p=="sell" :
-#             submission["type"]=1
-#         else :
-#             submission["type"]=0
+@app.route('/addsell', methods=['GET', 'POST'])
+@login_required
+def addsell():
+    sell=query_db('select * from buy_sell')
+    if request.method == "GET":
+        return render_template("addsell.html",un=session["username"],sell=sell)
+    else:
+        submission = {}
+        submission["item"] = request.form["item"]
+        submission["quantity"] = request.form["quantity"]
+        submission["price"] = request.form["price"]
+        submission["name"] = request.form["name"]
+        submission["contact"] = request.form["contact"]
+        submission["type"]=1
 
 
-#         file = request.files.get('image')
-#         if not(file):
-#             digest = md5(submission['title'].encode('utf-8')).hexdigest()
-#             submission["images"] = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 256) #here 256 is size in sq pixels
-#         else:
-#             extension = os.path.splitext(file.filename)[1]
-#             token = uuid.uuid4().hex+extension
-#             f = os.path.join(app.config['UPLOAD_FOLDER'],token)
-#             file.save(f)
-#             submission["images"] = url_for('uploaded_file',filename=token)
+        file = request.files.get('image')
+        if not(file):
+            digest = md5(submission['item'].encode('utf-8')).hexdigest()
+            submission["image"] = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 256) #here 256 is size in sq pixels
+        else:
+            extension = os.path.splitext(file.filename)[1]
+            token = uuid.uuid4().hex+extension
+            f = os.path.join(app.config['UPLOAD_FOLDER'],token)
+            file.save(f)
+            submission["image"] = url_for('uploaded_file',filename=token)
+            id=id+1
         
-#             execute_db("insert into buy_sell() values(?,?,?,?,?)", (
-#                 submission["title"],
-#                 submission["content"],
-#                 submission["date"],
-#                 submission["images"],
-#                 accept,
-#             ))
-#         return redirect(url_for("sell"))   
+            execute_db("insert into buy_sell (item,quantity,name,contact,type,image,price) values(?,?,?,?,?,?,?)", (
+                submission["item"],
+                submission["quantity"],
+                submission["name"],
+                submission["contact"],
+                submission["type"],
+                submission["image"],
+                submission["price"],
+            ))
+        return redirect(url_for("sell"))   
+
+@app.route('/addbuy', methods=['GET', 'POST'])
+@login_required
+def addbuy():
+    buy=query_db('select * from buy_sell')
+    if request.method == "GET":
+        return render_template("addbuy.html",un=session["username"],buy=buy)
+    else:
+        submission = {}
+        submission["item"] = request.form["item"]
+        submission["quantity"] = request.form["quantity"]
+        submission["price"] = request.form["price"]
+        submission["name"] = request.form["name"]
+        submission["contact"] = request.form["contact"]
+        submission["type"]=2
 
 
+        file = request.files.get('image')
+        if not(file):
+            digest = md5(submission['item'].encode('utf-8')).hexdigest()
+            submission["image"] = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 256) #here 256 is size in sq pixels
+        else:
+            extension = os.path.splitext(file.filename)[1]
+            token = uuid.uuid4().hex+extension
+            f = os.path.join(app.config['UPLOAD_FOLDER'],token)
+            file.save(f)
+            submission["image"] = url_for('uploaded_file',filename=token)
+            id=id+1
+        
+            execute_db("insert into buy_sell (item,quantity,name,contact,type,image,price) values(?,?,?,?,?,?,?)", (
+                submission["item"],
+                submission["quantity"],
+                submission["name"],
+                submission["contact"],
+                submission["type"],
+                submission["image"],
+                submission["price"],
+            ))
+        return redirect(url_for("buy"))   
 
 
 @app.route("/logout")

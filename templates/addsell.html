@@ -1,0 +1,94 @@
+ {% extends 'index.html' %}
+ {% block content %}
+
+
+<div class="col-lg-8 col-md-7">
+    
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script>
+                $(document).ready(function(){
+            
+                    $("input").click(function(){
+                        $("#datepicker").pickadate({
+                            formatSubmit: 'yyyy/mm/dd',
+                            hiddenName: true
+                        });
+                        $('#timepicker').pickatime({
+                            format: 'T!ime selected: h:i a',
+                            formatLabel: '<b>h</b>:i <!i>a</!i>',
+                            formatSubmit: 'HH:i',
+                            hiddenName: true
+                        }); 
+                    });
+                }); //this was missing
+            </script> 
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Add Items to sell</h4>
+                            </div>
+                            <div class="content">
+                                <form method="post" action="{{ url_for('addsell') }}" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                            <div class="form-group">
+                                                <label>ITEM</label>
+                                                <input class="form-control border-input" name="item" placeholder="Item name" value="" type="text">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Quantity</label>
+                                                <input class="form-control border-input" name="quantity" placeholder="Quantity" value="" type="text">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>Price</label>
+                                                    <input class="form-control border-input" name="price" placeholder="price" value="" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>Name</label>
+                                                    <input class="form-control border-input" name="name" placeholder="name" value="" type="text">
+                                                </div>
+                                            </div>
+                                        </div>   
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Image</label>
+                                                <input class="form-control border-input" name="image" placeholder="Image" value="" type="file">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Contact No.</label>
+                                                <input class="form-control border-input" name="contact" placeholder="contact no." value="" type="text">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Submit</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+{% endblock %}

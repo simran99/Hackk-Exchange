@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block content %}
-      <div class="row">
-      
+     <div class="row">
+      <a href="{{ url_for('addbuy') }}" class="btn btn-primary pull-right" role="button"><i class="ti-pencil-alt"></i>Add items to buy</a>
     </div>
         <div class="content">
             <div class="container-fluid">
@@ -10,7 +10,7 @@
 
                        {% for buy in buy %}
                         
-                        {% if buy[5]==0 %}
+                        {% if buy[5]==2 %}
                         <div class="col-lg-4 col-md-5">
                             <div class="card card-user">
                                 <div class="image">
@@ -39,7 +39,7 @@
 
                  
                         </div>
-                        }
+                        
                     </div>
                   </div>
 
