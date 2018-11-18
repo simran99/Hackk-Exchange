@@ -11,16 +11,7 @@
             <p class="category">Today</p>
         </div>
         <div class="content">
-            Location: {{ location }}<br> Weather: {{ weather }}<br>
-           {% for forecast in forecasts %}
-
-                {{forecast.text}}
-                {{forecast.date}}
-                {{forecast.high}}
-                {{forecast.low}}
-
-                <br>
-            {% endfor %}    
+            Location: {{ location }}<br> Weather: {{ weather }}<br>   
             <div class="footer">
               
                 <hr>
@@ -30,7 +21,39 @@
         </div>
     </div>
 </div>
+</div>
 <br>
+<div class="row">
+{% for forecast in forecasts %}
+<div class="col-lg-3 col-sm-6">
+                        <div class="card">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="icon-big icon-warning text-center">
+                                            <i class="ti-cloud"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <div class="numbers">
+                                            <p>{{forecast.date}}
+                                                High:{{forecast.high}}
+                                           Low:{{forecast.low}}
+                
+                
+                                           
+                                           {{forecast.text}}</p>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+{% endfor %}
+
+</div>
+<div class="row">
 <div class="col-md-6">
     <div class="card card-user">
                             <div class="image">
