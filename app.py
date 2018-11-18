@@ -22,7 +22,6 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #Limits filesize to 16MB
 app.secret_key = os.urandom(12)
 
 Database = 'agro.db'
-id = 0
 
 if app.config["DEBUG"]:
     @app.after_request
@@ -194,17 +193,17 @@ def addsell():
             f = os.path.join(app.config['UPLOAD_FOLDER'],token)
             file.save(f)
             submission["image"] = url_for('uploaded_file',filename=token)
-            id=id+1
+            
         
-            execute_db("insert into buy_sell (item,quantity,name,contact,type,image,price) values(?,?,?,?,?,?,?)", (
-                submission["item"],
-                submission["quantity"],
-                submission["name"],
-                submission["contact"],
-                submission["type"],
-                submission["image"],
-                submission["price"],
-            ))
+        execute_db("insert into buy_sell (id,item,quantity,name,contact,type,image,price) values(0,?,?,?,?,?,?,?)", (
+            submission["item"],
+            submission["quantity"],
+            submission["name"],
+            submission["contact"],
+            submission["type"],
+            submission["image"],
+            submission["price"],
+        ))
         return redirect(url_for("sell"))   
 
 @app.route('/addbuy', methods=['GET', 'POST'])
@@ -233,17 +232,17 @@ def addbuy():
             f = os.path.join(app.config['UPLOAD_FOLDER'],token)
             file.save(f)
             submission["image"] = url_for('uploaded_file',filename=token)
-            id=id+1
+            
         
-            execute_db("insert into buy_sell (item,quantity,name,contact,type,image,price) values(?,?,?,?,?,?,?)", (
-                submission["item"],
-                submission["quantity"],
-                submission["name"],
-                submission["contact"],
-                submission["type"],
-                submission["image"],
-                submission["price"],
-            ))
+        execute_db("insert into buy_sell (item,quantity,name,contact,type,image,price) values(?,?,?,?,?,?,?)", (
+            submission["item"],
+            submission["quantity"],
+            submission["name"],
+            submission["contact"],
+            submission["type"],
+            submission["image"],
+            submission["price"],
+        ))
         return redirect(url_for("buy"))   
 
 
@@ -252,6 +251,11 @@ def logout():
     session.clear()
     flash("Logout success","success")
     return redirect(url_for("login"))
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],filename)    
 
 
 
