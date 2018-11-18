@@ -1,17 +1,22 @@
-{% extends 'login-layout.html' %}
-{% block content %}
-  <div class="limiter">
-    <div class="container-login100">
+<html>
+<head>
+<title>AgroWeb</title>
+<link rel="stylesheet" type="text/css" href="/css/login.css">
 
-      <div class="wrap-login100">
-        <div class="login100-pic js-tilt" data-tilt>
-          <img src="/img/img.png" alt="IMG">
-        </div>
-
-      
- 
-        <form class="login100-form validate-form" action=" {{ url_for('login') }}" method = "post" id="showlogin">
-          <span class="login100-form-title">
+<link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+<body><div class="container">
+  <div class="title">
+    <div class="brand">
+      AGROWEB
+    </div>
+    <div class="subtitle">
+      Please! login for continue
+    </div>
+  </div>
+    
+    <form action="{{ url_for('login') }}" method = "post" id="showlogin">
+      <span class="login100-form-title">
             Member Login
           </span>
 
@@ -33,14 +38,14 @@
               Login
             </button>
           </div>
-
-
-          <div class="text-center p-t-136">
-            <a class="txt2" onclick="window.location.href='/signup'">
-              Create your Account
-              <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-            </a>
-          </div>
-        </form>
-
-{% endblock %}
+  </form>
+    <div class="row">
+      <div class="singup">
+        Don't have an account? <a class="txt2" onclick="window.location.href='/signup'">Signup</a>
+      </div>
+  </div>
+</div></body>
+</html>
+<script type="text/javascript">
+  feather.replace()
+</script>

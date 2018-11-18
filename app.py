@@ -151,7 +151,64 @@ def profile():
 
 
     return render_template('home.html',location = city, weather = weather, un=session["username"])
+ 
+@app.route('/sell')
+@login_required
+def sell():
+    sell=query_db('select * from buy_sell')
     
+    return render_template('sell.html', un=session["username"], sell=sell)    
+
+@app.route('/buy')
+@login_required
+def buy():
+    buy=query_db('select * from buy_sell')
+    
+    return render_template('buy.html', un=session["username"], buy=buy)
+
+ 
+#  @app.route('/addsell', methods=['GET', 'POST'])
+# @login_required
+# def addsell():
+#     sell=query_db('select * from buy_sell')
+#     if request.method == "GET":
+#         return render_template("sell.html",un=session["username"],sell=sell)
+#     else:
+#         submission = {}
+#         submission["item"] = request.form["item"]
+#         submission["quantity"] = request.form["quantity"]
+#         submission["price"] = request.form["price"]
+#         submission["name"] = request.form["name"]
+#         submission["contact"] = request.form["contact"]
+#         p = request.form["type"]
+#         if p=="sell" :
+#             submission["type"]=1
+#         else :
+#             submission["type"]=0
+
+
+#         file = request.files.get('image')
+#         if not(file):
+#             digest = md5(submission['title'].encode('utf-8')).hexdigest()
+#             submission["images"] = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 256) #here 256 is size in sq pixels
+#         else:
+#             extension = os.path.splitext(file.filename)[1]
+#             token = uuid.uuid4().hex+extension
+#             f = os.path.join(app.config['UPLOAD_FOLDER'],token)
+#             file.save(f)
+#             submission["images"] = url_for('uploaded_file',filename=token)
+        
+#             execute_db("insert into buy_sell() values(?,?,?,?,?)", (
+#                 submission["title"],
+#                 submission["content"],
+#                 submission["date"],
+#                 submission["images"],
+#                 accept,
+#             ))
+#         return redirect(url_for("sell"))   
+
+
+
 
 @app.route("/logout")
 def logout():

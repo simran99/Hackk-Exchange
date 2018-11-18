@@ -60,6 +60,14 @@
                         <i class="ti-user"></i>
                         <p>Agricultural Centers </p >
                     </a>
+                    <a href="{{ url_for('sell') }}">
+                        <i class="ti-user"></i>
+                        <p>Sellers</p>
+                    </a>
+                      <a href="{{ url_for('buy') }}">
+                        <i class="ti-user"></i>
+                        <p>Buyers</p>
+                    </a>
 
                 </li>
             <center><div id="google_translate_element"></div><script type="text/javascript">
@@ -85,12 +93,6 @@ function googleTranslateElementInit() {
                     <a class="navbar-brand" href="#">
 											{% if request.path == url_for('profile') %}
 												Home
-											<!-- {% elif request.path == url_for('buy_sell') %}
-                                                Buyers/Sellers
-                                                {% elif request.path == url_for('QA') %}
-                                                    Q and A
-                                                {% else %}
-                                                    Dashboard -->
 											{% endif %}
 										</a>
                 </div>
@@ -113,33 +115,26 @@ function googleTranslateElementInit() {
         </nav>
 
 
-
+<div class="content">
+            <div class="container-fluid">
+                {% block content %}
+                
+                {% endblock %}
+            </div>
+        </div>
 
 
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <script>
-      var messages = {{ messages | safe }}; 
+      var messages = "{{ messages | safe }}"; 
       for (var i=0; i<messages.length; i++) {
         alert(messages[i]);
       }
     </script>
   {% endif %}
 {% endwith %}
-
-
-
-<!--  {% with messages = get_flashed_messages(with_categories=true) %}
-   
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %} -->
+ 
 
         <!-- <footer class="footer">
             <div class="container-fluid">
@@ -206,13 +201,7 @@ function googleTranslateElementInit() {
 
 
 
-<div class="content">
-            <div class="container-fluid">
-                {% block content %}
-                
-                {% endblock %}
-            </div>
-        </div>
+
 
 
 </body>

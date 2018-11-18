@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+{% block content %}
+      <div class="row">
+      
+    </div>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+
+
+                       {% for buy in buy %}
+                        
+                        {% if buy[5]==0 %}
+                        <div class="col-lg-4 col-md-5">
+                            <div class="card card-user">
+                                <div class="image">
+                                    <img src="{{ buy[6] }}" alt=""/>
+                                </div>
+                                <div class="content">
+                                      <h4 class="title">{{ buy[1] }}<br />
+                                         
+                                      </h4>
+    
+                                    <p class="description text">
+                                        Quantity:{{ buy[2] }}<br>
+                                        Price:{{ buy[7] }}<br>
+                                        Contact Person:{{ buy[3] }}<br>
+                                        Phone no.:{{ buy[4] }}
+    
+                                    </p>
+                                </div>
+                              </div>
+                          </div>
+                       
+                        {% endif %}
+                          
+    
+                        {% endfor %}
+
+                 
+                        </div>
+                        }
+                    </div>
+                  </div>
+
+{% endblock %}
+
+
+
+
