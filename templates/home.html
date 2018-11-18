@@ -11,7 +11,16 @@
             <p class="category">Today</p>
         </div>
         <div class="content">
-            Location: {{ location }}<br> Weather: {{ weather }}
+            Location: {{ location }}<br> Weather: {{ weather }}<br>
+           {% for forecast in forecasts %}
+
+                {{forecast.text}}
+                {{forecast.date}}
+                {{forecast.high}}
+                {{forecast.low}}
+
+                <br>
+            {% endfor %}    
             <div class="footer">
               
                 <hr>

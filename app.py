@@ -146,11 +146,14 @@ def profile():
     weather = Weather(unit=Unit.CELSIUS)
     location1 = weather.lookup_by_location(str(city))
     condition = location1.condition
+    forecasts = location1.forecast
     weather = str(condition.text)
+    
+    
 
 
 
-    return render_template('home.html',location = city, weather = weather, un=session["username"])
+    return render_template('home.html',location = city, weather = weather, un=session["username"] , forecasts=forecasts)
  
 @app.route('/sell')
 @login_required
